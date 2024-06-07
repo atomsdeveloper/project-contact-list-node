@@ -4,11 +4,16 @@ const app = express();
 
 // Criando conexão com o banco de dados mongoose.
 const mongoose = require('mongoose');
-mongoose.connect(process.env.CONNECTIONSTRING, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose
+  .connect(process.env.CONNECTIONSTRING, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  })
   .then(() => {
     app.emit('pronto');
   })
-  .catch(e => console.log(e));
+  .catch((e) => console.log(e));
 // Sessions para cookies.
 const session = require('express-session');
 // Sessions serão salvas na base de dados.
