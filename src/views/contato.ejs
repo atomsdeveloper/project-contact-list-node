@@ -1,0 +1,51 @@
+<%- include('includes/head'); %>
+<%- include('includes/nav'); %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-2"></div>
+
+    <div class="col col-lg-8 my-5">
+      <h1 class="text-center"> Cadastro </h1>
+      <p class="text-center lead"> Faça um cadastro ou edite um contato. </p>
+
+      <%- include('includes/msg'); %>
+
+
+      <% if(contato._id) { %>
+      <form class="form-cadastro" action="/contato/edit/<%= contato._id %>" method="post">
+        <% } else { %>
+        <form class="form-cadastro" action="/contato/register" method="post">
+          <% } %>
+
+          <div class="form-group">
+            <label for="name">Nome</label>
+            <input type="text" name="name" value="<%= contato.name %>" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="secondname">Sobrenome</label>
+            <input type="text" name="secondname" value="<%= contato.secondname %>" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" name="email" value="<%= contato.email %>" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="tel">Telefone</label>
+            <input type="tel" name="tel" value="<%= contato.tel %>" class="form-control">
+          </div>
+
+          <button type="submit" class="btn btn-primary"> Salvar </button>
+          <input type="hidden" name="_csrf" value=<%= csrfToken %>> <!-- Válidação e segurança de formulário -->
+        </form>
+
+    </div>
+
+    <div class="col-lg-2"></div>
+  </div>
+</div>
+
+<%- include('includes/footer'); %>

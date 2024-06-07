@@ -1,0 +1,58 @@
+<%- include('includes/head'); %>
+<%- include('includes/nav'); %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-2"></div>
+
+    <div class="col col-lg-8 my-5">
+      <h1 class="text-center"> Login </h1>
+      <p class="text-center lead"> Faça login ou Crie sua conta. </p>
+
+      <%- include('includes/msg'); %>
+
+      <div class="row">
+        <div class="col-lg">
+          <h2> Faça o Cadastro no Sistema </h2>
+          <form class="form-register" action="/login/register" method="post">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" name="email" class="form-control" aria-describedby="emailHelp">
+            </div>
+
+            <div class="form-group">
+              <label for="password">Senha</label>
+              <input type="password" name="password" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary"> Cadastrar </button>
+            <input type="hidden" name="_csrf" value=<%= csrfToken %>> <!-- Válidação e segurança de formulário -->
+          </form>
+        </div>
+
+        <div class="col-lg">
+          <h2> Faça o Login no Sistema </h2>
+
+          <form class="form-login" action="/login/login" method="post">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" name="email" class="form-control" aria-describedby="emailHelp">
+            </div>
+
+            <div class="form-group">
+              <label for="password">Senha</label>
+              <input type="password" name="password" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary"> Entrar </button>
+            <input type="hidden" name="_csrf" value=<%= csrfToken %>> <!-- Válidação e segurança de formulário -->
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-2"></div>
+  </div>
+</div>
+
+<%- include('includes/footer'); %>
