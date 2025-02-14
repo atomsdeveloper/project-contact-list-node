@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const cors = require('cors');
+
 
 // Criando conexão com o banco de dados mongoose.
 const mongoose = require('mongoose');
@@ -37,6 +39,7 @@ app.use(helmet());
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors({ origin: 'https://meu-frontend.vercel.app' }));
 
 // Resolvendo arquivos estáticos.
 app.use(express.static(path.resolve(__dirname, '../public')));
