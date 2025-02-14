@@ -39,10 +39,6 @@ app.use(helmet());
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors({ origin: 'https://meu-frontend.vercel.app' }));
-
-// Resolvendo arquivos estáticos.
-app.use(express.static(path.resolve(__dirname, '../public')));
 
 // Usando sessions para salvar os dados no navegador.
 const sessionOptions = session({
@@ -60,6 +56,11 @@ app.use(sessionOptions);
 // Menssagems para serem enviadas e logo após deixarem de existir.
 app.use(flash());
 
+app.use(cors({ origin: 'https://meu-frontend.vercel.app' }));
+
+// Resolvendo arquivos estáticos.
+app.use(express.static(path.resolve(__dirname, 'public')));
+
 // Config views e engine view
 app.set('views', path.resolve(__dirname, 'src', 'views'));
 app.set('view engine', 'ejs');
@@ -75,7 +76,9 @@ app.use(routes);
 
 // Só inicia o servidor quando a promise da conexão com o banco emitir o sinal 'pronto'.
 app.on('pronto', () => {
-  app.listen(process.env.PORTSERVER, () => {
+  const PORT = process.env.PORTSERVER || 3000;
+
+  app.listen(PORT, () => {
     console.log(`Acessar http://localhost:${process.env.PORTSERVER}`);
     console.log(`Servidor executando na porta ${process.env.PORTSERVER}`);
   });
