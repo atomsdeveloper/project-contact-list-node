@@ -5,8 +5,8 @@ const app = express();
 
 // Criando conexão com o banco de dados mongoose.
 const mongoose = require('mongoose');
-mongoose
-  .connect(process.env.CONNECTIONSTRING, {
+mongoose.connect(process.env.CONNECTIONSTRING,
+  {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
