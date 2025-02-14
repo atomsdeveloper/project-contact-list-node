@@ -62,7 +62,7 @@ app.use(cors({ origin: 'https://meu-frontend.vercel.app' }));
 app.use(express.static(path.resolve(__dirname, 'public')));
 
 // Config views e engine view
-app.set('views', path.resolve(__dirname, 'backend', 'views'));
+app.set('views', path.resolve(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // Segurança de formulário
