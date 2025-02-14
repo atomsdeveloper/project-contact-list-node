@@ -1,8 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const cors = require('cors');
-
+// const cors = require('cors');
 
 // Criando conexão com o banco de dados mongoose.
 const mongoose = require('mongoose');
@@ -53,13 +52,14 @@ const sessionOptions = session({
   }
 });
 app.use(sessionOptions);
+
 // Menssagems para serem enviadas e logo após deixarem de existir.
 app.use(flash());
 
-app.use(cors({ origin: 'https://meu-frontend.vercel.app' }));
+// app.use(cors({ origin: 'https://meu-frontend.vercel.app' }));
 
 // Resolvendo arquivos estáticos.
-app.use(express.static(path.resolve(__dirname, 'public')));
+app.use(express.static(path.resolve(__dirname, '../public')));
 
 // Config views e engine view
 app.set('views', path.resolve(__dirname, 'views'));
