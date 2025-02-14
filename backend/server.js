@@ -14,27 +14,32 @@ mongoose
     app.emit('pronto');
   })
   .catch((e) => console.log(e));
+
 // Sessions para cookies.
 const session = require('express-session');
+
 // Sessions serão salvas na base de dados.
 const MongoStore = require('connect-mongo');
+
 // Mensagems rápidas que são salvas na sessions para emitir mensagems para o cliente de erro ou sucesso.
 const flash = require('connect-flash');
 
 const routes = require('./routes');
 const path = require('path');
-// Recomendação de segurança para cabeçalhos do espress.
+
+// Recomendação de segurança para cabeçalhos do express.
 const helmet = require('helmet');
 const csrf = require('csurf');
 
-const { middlewareGlobal, checkCsrfError, csrfMiddleware } = require('./src/middlewares/middleware');
+const { middlewareGlobal, checkCsrfError, csrfMiddleware } = require('./middlewares/middleware');
 
 app.use(helmet());
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
 // Resolvendo arquivos estáticos.
-app.use(express.static(path.resolve(__dirname, 'public')));
+app.use(express.static(path.resolve(__dirname, '../public')));
 
 // Usando sessions para salvar os dados no navegador.
 const sessionOptions = session({
