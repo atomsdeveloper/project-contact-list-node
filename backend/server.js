@@ -58,9 +58,6 @@ app.use(flash());
 
 // app.use(cors({ origin: 'https://meu-frontend.vercel.app' }));
 
-// Resolvendo arquivos estáticos.
-app.use(express.static(path.resolve(__dirname, '../public')));
-
 // Config views e engine view
 app.set('views', path.resolve(__dirname, 'views'));
 app.set('view engine', 'ejs');

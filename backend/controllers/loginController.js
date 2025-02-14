@@ -1,8 +1,8 @@
 const Login = require('../models/loginModel');
 
 exports.index = function (req, res) {
-  if (req.session.user) return res.render('logado');
-  return res.render('login');
+  if (req.session.user) return res.status(200).json({ user: req.session.user });
+  return res.status(404).json({ message: "É necessário realizar o login" });
 };
 
 exports.register = async function (req, res) {
@@ -26,7 +26,7 @@ exports.register = async function (req, res) {
     return;
   } catch (e) {
     console.log(e);
-    res.send('404');
+    return res.status(500).json({ message: "Error 404" });
   }
 };
 
@@ -52,7 +52,7 @@ exports.login = async function (req, res) {
     return;
   } catch (e) {
     console.log(e);
-    res.send('404');
+    return res.status(500).json({ message: "Error 404" });
   }
 };
 
