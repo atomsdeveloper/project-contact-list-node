@@ -60,8 +60,8 @@ class Login {
     if (!validator.isEmail(this.body.email))
       this.errors.push('E-mail inváido.');
     // Validar senha
-    if (this.body.password.length < 3 || this.body.password.length > 50) {
-      this.errors.push('A senha precisa ter entre 3 e 5 caracteres.');
+    if (this.body.password.length < 3 || this.body.password.length > 15) {
+      this.errors.push('A senha precisa ter entre 3 e 15 caracteres.');
     }
   }
 

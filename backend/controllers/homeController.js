@@ -3,7 +3,10 @@ const Contato = require('../models/contatoModel');
 exports.index = async function (req, res) {
   const contatos = await Contato.buscarContatos();
   if (!contatos) {
-    req.flash('success', 'Cadastro efetuado com sucesso, faça o Login.');
+    req.flash('error', 'Não há cadastros na agenda.');
   }
-  res.status(200).json({ contatos });
+
+  // Armazenando na sessão os resultados encontrados em contatos.
+  req.sessions.contatos = contatos;
+  res.redirect('/index');
 };

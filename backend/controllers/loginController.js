@@ -1,8 +1,10 @@
 const Login = require('../models/loginModel');
 
 exports.index = function (req, res) {
-  if (req.session.user) return res.status(200).json({ user: req.session.user });
-  return res.status(404).json({ message: "É necessário realizar o login" });
+  const contatos = req.session.contatos || [];
+  delete req.session.contatos;
+
+  if (req.session.contatos) return res.status(200).json({ contatos: contatos });
 };
 
 exports.register = async function (req, res) {
