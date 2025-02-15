@@ -8,13 +8,16 @@ exports.middlewareGlobal = (req, res, next) => {
 
 exports.checkCsrfError = (err, req, res, next) => {
   if (err) {
-    return res.render('404');
+    return res.status(404).json({ message: err })
   }
   next();
 };
 
 exports.csrfMiddleware = (req, res, next) => {
-  res.json({ csrfToken: req.csrfToken() })
+  if (res.headersSent) {
+    return
+  }
+  res.locals.csrfToken = req.csrfToken(); // Disponibiliza o CSRF token para as rotas
   next();
 };
 
