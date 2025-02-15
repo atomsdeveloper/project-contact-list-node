@@ -5,12 +5,7 @@ const cors = require('cors');
 
 // Criando conexão com o banco de dados mongoose.
 const mongoose = require('mongoose');
-mongoose.connect(process.env.CONNECTIONSTRING,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-  })
+mongoose.connect(process.env.CONNECTIONSTRING)
   .then(() => {
     app.emit('pronto');
   })
@@ -56,7 +51,8 @@ app.use(sessionOptions);
 // Menssagems para serem enviadas e logo após deixarem de existir.
 app.use(flash());
 
-// app.use(cors({ origin: 'https://meu-frontend.vercel.app' }));
+app.use(cors({ origin: 'http://localhost:5137' }));
+app.use(cors({ origin: 'http://localhost:5137' }));
 
 // Segurança de formulário
 app.use(csrf());
