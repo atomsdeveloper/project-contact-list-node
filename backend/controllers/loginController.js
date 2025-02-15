@@ -1,12 +1,5 @@
 const Login = require('../models/loginModel');
 
-exports.index = function (req, res) {
-  const contatos = req.session.contatos || [];
-  delete req.session.contatos;
-
-  if (req.session.contatos) return res.status(200).json({ contatos: contatos });
-};
-
 exports.register = async function (req, res) {
   try {
     const login = new Login(req.body);
@@ -37,21 +30,14 @@ exports.login = async function (req, res) {
     const login = new Login(req.body);
     await login.login();
 
-    // Caso exista erros e enviada uma mensagem flash com o erro especifico.
+    // Caso exista erros e enviada uma mensagem com o erro especifico.
     if (login.errors.length > 0) {
-      req.flash('errors', login.errors);
-      req.session.save(function () {
-        return res.redirect('./index');
-      });
-      return;
+      return res.status(400).json({ errors: login.errors })
     }
 
-    req.flash('success', 'Você entrou no sistema.');
+    // Após o Login com sucesso, armazenar o usuário na sessão
     req.session.user = login.user;
-    req.session.save(function () {
-      return res.redirect('back');
-    });
-    return;
+    return res.status(200).json({ message: "Você entrou no sistema.", user: login.user });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ message: "Error 404" });
