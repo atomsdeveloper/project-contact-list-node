@@ -7,6 +7,6 @@ exports.index = async function (req, res) {
   }
 
   // Armazenando na sessão os resultados encontrados em contatos.
-  req.sessions.contatos = contatos;
+  req.session.contatos = contatos;
   res.redirect('/index');
 };
