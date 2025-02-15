@@ -52,7 +52,7 @@ app.use(sessionOptions);
 app.use(flash());
 
 app.use(cors({ origin: 'http://localhost:5137' }));
-app.use(cors({ origin: 'http://localhost:5137' }));
+app.use(cors({ origin: 'project-contact-list-node-production.up.railway.app' }));
 
 // Segurança de formulário
 app.use(csrf());

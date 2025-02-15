@@ -4,9 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "install": "npm install --omit=dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js --ignore public --ignore frontend",
-    "dev": "webpack -w"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
