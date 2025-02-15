@@ -21,6 +21,32 @@ exports.csrfMiddleware = (req, res, next) => {
   next();
 };
 
+exports.corsMiddleware = (req, res, next) => {
+  const allowOrigins = [
+    'http://localhost:5173', // Frontend do React
+    'http://localhost:3000',  // Backend
+  ];
+
+  const origin = req.headers.origin;
+
+  // Verificar se o domínio de origem está na lista de permitidos
+  if (origin && allowOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+  }
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  // Se for uma requisição preflight (OPTIONS), respondemos rapidamente.
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+}
+
 exports.loginRequired = (req, res, next) => {
   if (!req.session.user) {
     req.session.save(() => res.redirect('/'));

@@ -1,15 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const cors = require('cors');
-
-// Criando conexão com o banco de dados mongoose.
-const mongoose = require('mongoose');
-mongoose.connect(process.env.CONNECTIONSTRING)
-  .then(() => {
-    app.emit('pronto');
-  })
-  .catch((e) => console.log(e));
 
 // Sessions para cookies.
 const session = require('express-session');
@@ -21,18 +12,19 @@ const MongoStore = require('connect-mongo');
 const flash = require('connect-flash');
 
 const routes = require('./routes');
-const path = require('path');
 
 // Recomendação de segurança para cabeçalhos do express.
 const helmet = require('helmet');
 const csrf = require('csurf');
 
-const { middlewareGlobal, checkCsrfError, csrfMiddleware } = require('./middlewares/middleware');
+const { middlewareGlobal, checkCsrfError, csrfMiddleware, corsMiddleware } = require('./middlewares/middleware');
 
-app.use(helmet());
+app.use(corsMiddleware);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use(helmet());
 
 // Usando sessions para salvar os dados no navegador.
 const sessionOptions = session({
@@ -51,13 +43,6 @@ app.use(sessionOptions);
 // Menssagems para serem enviadas e logo após deixarem de existir.
 app.use(flash());
 
-const corsOptions = {
-  origin: ['http://localhost:5137', 'https://project-contact-list-node-production.up.railway.app'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
-app.use(cors(corsOptions));
-
 // Segurança de formulário
 app.use(csrf());
 
@@ -66,6 +51,14 @@ app.use(middlewareGlobal);
 app.use(checkCsrfError);
 app.use(csrfMiddleware);
 app.use(routes);
+
+// Criando conexão com o banco de dados mongoose.
+const mongoose = require('mongoose');
+mongoose.connect(process.env.CONNECTIONSTRING)
+  .then(() => {
+    app.emit('pronto');
+  })
+  .catch((e) => console.log(e));
 
 // Só inicia o servidor quando a promise da conexão com o banco emitir o sinal 'pronto'.
 app.on('pronto', () => {
