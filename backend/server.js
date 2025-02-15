@@ -51,8 +51,12 @@ app.use(sessionOptions);
 // Menssagems para serem enviadas e logo após deixarem de existir.
 app.use(flash());
 
-app.use(cors({ origin: 'http://localhost:5137' }));
-app.use(cors({ origin: 'project-contact-list-node-production.up.railway.app' }));
+const corsOptions = {
+  origin: ['http://localhost:5137', 'https://project-contact-list-node-production.up.railway.app'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
 
 // Segurança de formulário
 app.use(csrf());
