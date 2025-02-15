@@ -1,7 +1,17 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-// const cors = require('cors');
+// Sessions para cookies.
+const session = require('express-session');
+// Sessions serão salvas na base de dados.
+const MongoStore = require('connect-mongo');
+
+const routes = require('./routes');
+const path = require('path');
+
+// Recomendação de segurança para cabeçalhos do express.
+const helmet = require('helmet');
+const csrf = require('csurf');
 
 // Criando conexão com o banco de dados mongoose.
 const mongoose = require('mongoose');
@@ -15,22 +25,6 @@ mongoose.connect(process.env.CONNECTIONSTRING,
     app.emit('pronto');
   })
   .catch((e) => console.log(e));
-
-// Sessions para cookies.
-const session = require('express-session');
-
-// Sessions serão salvas na base de dados.
-const MongoStore = require('connect-mongo');
-
-// Mensagems rápidas que são salvas na sessions para emitir mensagems para o cliente de erro ou sucesso.
-const flash = require('connect-flash');
-
-const routes = require('./routes');
-const path = require('path');
-
-// Recomendação de segurança para cabeçalhos do express.
-const helmet = require('helmet');
-const csrf = require('csurf');
 
 const { middlewareGlobal, checkCsrfError, csrfMiddleware } = require('./middlewares/middleware');
 
@@ -52,9 +46,6 @@ const sessionOptions = session({
   }
 });
 app.use(sessionOptions);
-
-// Menssagems para serem enviadas e logo após deixarem de existir.
-app.use(flash());
 
 // app.use(cors({ origin: 'https://meu-frontend.vercel.app' }));
 
