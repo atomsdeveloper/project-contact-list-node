@@ -24,7 +24,8 @@ exports.csrfMiddleware = (req, res, next) => {
 exports.corsMiddleware = (req, res, next) => {
   const allowOrigins = [
     'http://localhost:5173', // Frontend do React
-    'http://localhost:3000',  // Backend
+    'http://localhost:3000', // Backend
+    'http://localhost:3000', // Produção
   ];
 
   const origin = req.headers.origin;
@@ -37,7 +38,7 @@ exports.corsMiddleware = (req, res, next) => {
   }
 
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-CSRF-Token');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
 
   // Se for uma requisição preflight (OPTIONS), respondemos rapidamente.
