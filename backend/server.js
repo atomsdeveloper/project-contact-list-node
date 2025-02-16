@@ -62,7 +62,7 @@ mongoose.connect(process.env.CONNECTIONSTRING)
 
 // Só inicia o servidor quando a promise da conexão com o banco emitir o sinal 'pronto'.
 app.on('pronto', () => {
-  const PORT = process.env.PORTSERVER || 3000;
+  const PORT = process.env.PORTSERVER || 8080;
 
   app.listen(PORT, () => {
     console.log(`Acessar http://localhost:${process.env.PORTSERVER}`);
