@@ -3,7 +3,7 @@ const validator = require('validator');
 const bcryptjs = require('bcryptjs');
 
 const LoginSchema = new mongoose.Schema({
-  email: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
 
@@ -13,6 +13,7 @@ class Login {
   constructor(body) {
     this.body = body;
     this.errors = [];
+    this.success = [];
     this.user = null;
   }
 
@@ -32,25 +33,32 @@ class Login {
       this.user = null;
       return;
     }
+
+    this.success.push("Você entrou no sistema.")
   }
 
   async register() {
     this.validate();
     if (this.errors.length > 0) return;
 
-    await this.userExists();
-
-    if (this.errors.length > 0) return;
+    if (await this.userExists()) return;
 
     const salt = bcryptjs.genSaltSync();
     this.body.password = bcryptjs.hashSync(this.body.password, salt);
 
     this.user = await LoginModel.create(this.body);
+    this.success.push("Usuário craido com sucesso");
   }
 
   async userExists() {
     this.user = await LoginModel.findOne({ email: this.body.email });
-    if (this.user) this.errors.push('Usuário já existe.');
+    console.log("Exist user: ", this.user);
+    if (this.user) {
+      this.errors.push('Usuário já existe.');
+      return true;
+    }
+
+    return false;
   }
 
   validate() {
