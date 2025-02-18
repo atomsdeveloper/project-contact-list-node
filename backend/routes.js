@@ -13,9 +13,9 @@ const loginController = require('./controllers/loginController');
 route.get('/', homeController.start);
 
 // Rotas de login
-// route.post('/register', loginController.register);
+route.post('/register', loginController.register);
 route.post('/login', loginController.login);
-// route.get('/logout', loginController.logout);
+route.get('/logout', loginController.logout);
 
 // // Rotas de contato
 // route.get('/contato/index', loginRequired, contatoController.index);
