@@ -7,6 +7,15 @@ const session = require('express-session');
 
 // Sessions serão salvas na base de dados.
 const MongoStore = require('connect-mongo');
+// Criando conexão com o banco de dados mongoose.
+const mongoose = require('mongoose');
+mongoose.connect(process.env.CONNECTIONSTRING)
+  .then(() => {
+    app.locals.db = mongoose.connection;
+    app.emit('pronto');
+  })
+  .catch((e) => console.log(e));
+
 
 // Mensagems rápidas que são salvas na sessions para emitir mensagems para o cliente de erro ou sucesso.
 const flash = require('connect-flash');
@@ -34,7 +43,7 @@ const sessionOptions = session({
   saveUninitialized: false,
   // Duração do cookie
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 20,
     httpOnly: true
   }
 });
@@ -51,14 +60,6 @@ app.use(middlewareGlobal);
 app.use(checkCsrfError);
 app.use(csrfMiddleware);
 app.use(routes);
-
-// Criando conexão com o banco de dados mongoose.
-const mongoose = require('mongoose');
-mongoose.connect(process.env.CONNECTIONSTRING)
-  .then(() => {
-    app.emit('pronto');
-  })
-  .catch((e) => console.log(e));
 
 // Só inicia o servidor quando a promise da conexão com o banco emitir o sinal 'pronto'.
 app.on('pronto', () => {
