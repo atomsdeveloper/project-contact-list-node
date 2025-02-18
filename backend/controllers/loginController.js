@@ -1,3 +1,4 @@
+const MongoStore = require("connect-mongo");
 const Login = require('../models/loginModel');
 
 exports.register = async function (req, res) {
@@ -29,12 +30,12 @@ exports.login = async function (req, res) {
     }
 
     // Após o Login com sucesso, armazenar o usuário na sessão
-    req.session.user = {
+    const auth = req.session.user = {
       id: login.user._id,
       email: login.user.email,
       token: login.user.token, // Adicione o token aqui
     };
-    return res.status(200).json({ errors: false, success: login.success, user: login.user });
+    return res.status(200).json({ errors: false, success: login.success, user: login.user, auth: auth });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ message: "Error 404" });
@@ -42,6 +43,18 @@ exports.login = async function (req, res) {
 };
 
 exports.logout = function (req, res) {
-  req.session.destroy();
-  res.redirect('/');
+  req.session.destroy(async (err) => {
+    if (err) {
+      console.error("Erro ao destruir sessão:", err);
+      return res.status(500).json({ message: "Erro ao fazer logout" });
+    }
+
+    // Removendo sessão diretamente do MongoStore
+    const store = MongoStore.create({ mongoUrl: process.env.CONNECTIONSTRING });
+    await store.destroy(req.sessionID); // Remover esta linha
+
+    // Remover o cookie do navegador
+    res.clearCookie("connect.sid", { path: "/", httpOnly: true });
+    return res.status(200).json({ message: "Logout realizado com sucesso" });
+  });
 };
