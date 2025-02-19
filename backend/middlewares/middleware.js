@@ -8,14 +8,14 @@ exports.middlewareGlobal = (req, res, next) => {
 
 exports.checkCsrfError = (err, req, res, next) => {
   if (err) {
-    return res.status(404).json({ message: err })
+    return res.status(404).json({ message: err });
   }
   next();
 };
 
 exports.csrfMiddleware = (req, res, next) => {
   if (res.headersSent) {
-    return
+    return;
   }
   res.locals.csrfToken = req.csrfToken(); // Disponibiliza o CSRF token para as rotas
   next();
@@ -37,8 +37,14 @@ exports.corsMiddleware = (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
   }
 
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-CSRF-Token');
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, DELETE, OPTIONS',
+  );
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, X-CSRF-Token',
+  );
   res.setHeader('Access-Control-Allow-Credentials', 'true');
 
   // Se for uma requisição preflight (OPTIONS), respondemos rapidamente.
@@ -46,12 +52,13 @@ exports.corsMiddleware = (req, res, next) => {
     return res.status(200).end();
   }
   next();
-}
+};
 
 exports.loginRequired = (req, res, next) => {
   if (!req.session.user) {
-    req.session.save(() => res.redirect('/'));
-    req.flash('errors', 'Você precisa fazer login.');
+    req.session.save(() => {
+      res.json({ success: false, message: 'Você precisa fazer login.' });
+    });
     return;
   }
   next();
