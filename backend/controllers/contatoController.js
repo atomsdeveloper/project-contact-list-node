@@ -4,27 +4,28 @@ const Contato = require('../models/contatoModel');
 //   res.status(200).json({ contato: {} });
 // };
 
-// exports.register = async function (req, res) {
-//   try {
-//     const contato = new Contato(req.body);
-//     await contato.register();
+exports.register = async function (req, res) {
+  try {
+    const contato = new Contato(req.body);
+    await contato.register();
 
-//     if (contato.errors.length > 0) {
-//       req.flash('errors', contato.errors);
-//       req.session.save(() => res.redirect('back'));
-//       return;
-//     }
+    if (contato.errors.length > 0) {
+      return res.status(400).json({ success: false, errors: contato.errors });
+    }
 
-//     req.flash('success', 'Contato registrado com sucesso.');
-//     req.session.save(() =>
-//       res.redirect(`/contato/index/${contato.contato._id}`),
-//     );
-//     return;
-//   } catch (e) {
-//     console.log(e);
-//     res.status(404).json({ message: "Error 404" });
-//   }
-// };
+    res.status(201).json({
+      success: true,
+      message: 'Contato registrado com sucesso.',
+      contato: contato.contato,
+    });
+    return;
+  } catch (e) {
+    console.log(e);
+    res
+      .status(500)
+      .json({ success: false, message: 'Erro interno do servidor.' });
+  }
+};
 
 // exports.editIndex = async function (req, res) {
 //   if (!req.params.id) res.status(404).json({ message: "Error 404" });
@@ -34,36 +35,41 @@ const Contato = require('../models/contatoModel');
 //   res.json({ contato });
 // };
 
-// exports.edit = async function (req, res) {
-//   try {
-//     if (!req.params.id) res.status(404).json({ message: "Error 404" });
-//     const contato = new Contato(req.body);
-//     await contato.edit(req.params.id);
+exports.edit = async function (req, res) {
+  try {
+    if (!req.params.id)
+      res.status(404).json({ message: 'Não é possivel encontrar o id.' });
 
-//     if (contato.errors.length > 0) {
-//       req.flash('errors', contato.errors);
-//       req.session.save(() => res.redirect('back'));
-//       return;
-//     }
+    const contato = new Contato(req.body);
+    await contato.edit(req.params.id);
 
-//     req.flash('success', 'Contato editado com sucesso.');
-//     req.session.save(() =>
-//       res.redirect(`/contato/index/${contato.contato._id}`),
-//     );
-//     return;
-//   } catch (e) {
-//     console.log(e);
-//     res.status(404).json({ message: "Error 404" });
-//   }
-// };
+    if (contato.errors.length > 0) {
+      res.status(404).json({ success: false, message: contato.errors });
+      return;
+    }
 
-// exports.delete = async function (req, res) {
-//   if (!req.params.id) res.status(404).json({ message: "Error 404" });
+    res.status(201).json({ errors: false, message: contato.success });
+    return;
+  } catch (e) {
+    console.log(e);
+    res.status(404).json({ message: 'Error interno do servidor.' });
+  }
+};
 
-//   const contato = await Contato.delete(req.params.id);
-//   if (!contato) res.status(404).json({ message: "Error 404" });
+exports.delete = async function (req, res) {
+  if (!req.params.id)
+    return res
+      .status(404)
+      .json({ message: 'O id não foi fornecido para executar esta ação.' });
 
-//   req.flash('success', `Contato ${req.params.id} apagado com sucesso.`);
-//   req.session.save(() => res.redirect(`back`));
-//   return;
-// };
+  const contato = await Contato.delete(req.params.id);
+  if (!contato) {
+    return res.status(404).json({ message: 'Contato não encontrado.' });
+  }
+
+  return res.status(201).json({
+    success: true,
+    message: `Contato ${req.params.id} apagado com sucesso.`,
+    deletedContact: contato,
+  });
+};
