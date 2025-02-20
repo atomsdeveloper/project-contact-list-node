@@ -1,9 +1,5 @@
 const Contato = require('../models/contatoModel');
 
-// exports.index = function (req, res) {
-//   res.status(200).json({ contato: {} });
-// };
-
 exports.register = async function (req, res) {
   try {
     const contato = new Contato(req.body);
@@ -27,13 +23,16 @@ exports.register = async function (req, res) {
   }
 };
 
-// exports.editIndex = async function (req, res) {
-//   if (!req.params.id) res.status(404).json({ message: "Error 404" });
+exports.editIndex = async function (req, res) {
+  if (!req.params.id)
+    res.status(404).json({ message: 'Não foi recebido um id.' });
 
-//   const contato = await Contato.buscarId(req.params.id);
-//   if (!contato) res.status(404).json({ message: "Nenhum contato foi encontrado." });
-//   res.json({ contato });
-// };
+  const contato = await Contato.buscarId(req.params.id);
+  if (!contato)
+    res.status(404).json({ message: 'Nenhum contato foi encontrado.' });
+
+  return res.status(200).json({ success: true, contato });
+};
 
 exports.edit = async function (req, res) {
   try {

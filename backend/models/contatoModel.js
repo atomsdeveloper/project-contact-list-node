@@ -57,7 +57,9 @@ Contato.prototype.cleanUp = function () {
 };
 
 Contato.prototype.edit = async function (id) {
-  if (typeof id !== 'string') return;
+  if (typeof id !== 'string') {
+    this.errors.push('Não foi recebido um id.');
+  }
   this.validate();
   if (this.errors.length > 0) return;
   this.success = 'Contato editado com sucesso.';
@@ -66,12 +68,12 @@ Contato.prototype.edit = async function (id) {
   });
 };
 
-// // Método estático.
-// Contato.buscarId = async function (id) {
-//   if (typeof id !== 'string') return;
-//   const contato = await ContatoModel.findById({ _id: id });
-//   return contato;
-// };
+// Método estático.
+Contato.buscarId = async function (id) {
+  if (typeof id !== 'string') return;
+  const contato = await ContatoModel.findById({ _id: id });
+  return contato;
+};
 
 Contato.buscarContatos = async function (id) {
   const contato = await ContatoModel.find().sort({ created: 1 });
