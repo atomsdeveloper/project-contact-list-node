@@ -23,9 +23,8 @@ exports.csrfMiddleware = (req, res, next) => {
 
 exports.corsMiddleware = (req, res, next) => {
   const allowOrigins = [
-    'http://localhost:5173', // Frontend do React
-    'http://localhost:3000', // Backend
-    'http://localhost:3000', // Produção
+    'http://localhost:5173', // Development
+    'https://project-contact-list-node-production.up.railway.app', // Produção
   ];
 
   const origin = req.headers.origin;
