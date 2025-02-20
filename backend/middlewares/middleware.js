@@ -24,7 +24,7 @@ exports.csrfMiddleware = (req, res, next) => {
 exports.corsMiddleware = (req, res, next) => {
   const allowOrigins = [
     'http://localhost:5173', // Development
-    'https://project-contact-list-react.vercel.app/', // Produção
+    'https://project-contact-list-react.vercel.app', // Produção
   ];
 
   const origin = req.headers.origin;
@@ -35,7 +35,7 @@ exports.corsMiddleware = (req, res, next) => {
   } else {
     res.setHeader(
       'Access-Control-Allow-Origin',
-      'https://project-contact-list-react.vercel.app/',
+      'https://project-contact-list-react.vercel.app',
     );
   }
 
