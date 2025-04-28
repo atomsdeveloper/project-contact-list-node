@@ -13,12 +13,11 @@ const { loginRequired } = require('./middlewares/middleware');
 route.get('/', homeController.start);
 
 // Rotas de login
-route.post('/register', loginController.register);
+route.post('/registro', loginController.register);
 route.post('/login', loginController.login);
 route.get('/logout', loginController.logout);
 
 // // Rotas de contato
-// route.get('/contato/index', loginRequired, contatoController.index);
 route.post('/contato/register', loginRequired, contatoController.register);
 route.get('/contato/index/:id', loginRequired, contatoController.editIndex);
 route.post('/contato/edit/:id', loginRequired, contatoController.edit);
