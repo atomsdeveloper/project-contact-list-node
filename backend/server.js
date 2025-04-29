@@ -9,13 +9,13 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 // Criando conexão com o banco de dados mongoose.
 const mongoose = require('mongoose');
-mongoose.connect(process.env.CONNECTIONSTRING)
+mongoose
+  .connect(process.env.CONNECTIONSTRING)
   .then(() => {
     app.locals.db = mongoose.connection;
     app.emit('pronto');
   })
   .catch((e) => console.log(e));
-
 
 // Mensagems rápidas que são salvas na sessions para emitir mensagems para o cliente de erro ou sucesso.
 const flash = require('connect-flash');
@@ -26,7 +26,12 @@ const routes = require('./routes');
 const helmet = require('helmet');
 const csrf = require('csurf');
 
-const { middlewareGlobal, checkCsrfError, csrfMiddleware, corsMiddleware } = require('./middlewares/middleware');
+const {
+  middlewareGlobal,
+  checkCsrfError,
+  csrfMiddleware,
+  corsMiddleware,
+} = require('./middlewares/middleware');
 
 app.use(corsMiddleware);
 
@@ -44,8 +49,8 @@ const sessionOptions = session({
   // Duração do cookie
   cookie: {
     maxAge: 1000 * 60 * 20,
-    httpOnly: true
-  }
+    httpOnly: true,
+  },
 });
 app.use(sessionOptions);
 
