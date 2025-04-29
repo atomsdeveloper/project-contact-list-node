@@ -10,7 +10,9 @@ const MongoStore = require('connect-mongo');
 // Criando conexão com o banco de dados mongoose.
 const mongoose = require('mongoose');
 mongoose
-  .connect(process.env.CONNECTIONSTRING)
+  .connect(process.env.CONNECTIONSTRING, {
+    writeConcern: { w: 1 },
+  })
   .then(() => {
     app.locals.db = mongoose.connection;
     app.emit('pronto');
