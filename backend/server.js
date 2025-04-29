@@ -45,9 +45,14 @@ app.use(helmet());
 // Usando sessions para salvar os dados no navegador.
 const sessionOptions = session({
   secret: process.env.SESSIONSECRET,
-  store: MongoStore.create({ mongoUrl: process.env.CONNECTIONSTRING }),
+  store: MongoStore.create({
+    mongoUrl: process.env.CONNECTIONSTRING,
+    options: {
+      writeConcern: { w: 'majority' }, // Configura o Write Concern
+    },
+  }),
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   // Duração do cookie
   cookie: {
     maxAge: 1000 * 60 * 20,
