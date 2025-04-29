@@ -2,6 +2,11 @@ const MongoStore = require('connect-mongo');
 const Login = require('../models/loginModel');
 
 exports.register = async function (req, res) {
+  const csrfTokenFromRequest = req.headers['x-csrf-token'];
+  if (!csrfTokenFromRequest) {
+    return res.status(403).json({ success: false, errors: 'Token não existe' }); // Se o token não for válido
+  }
+
   try {
     const login = new Login(req.body);
     await login.register();
@@ -15,7 +20,7 @@ exports.register = async function (req, res) {
     return res.status(201).json({ errors: false, success: login.success });
   } catch (e) {
     console.log(e);
-    res.status(500).json({ message: 'Error 404' });
+    res.status(500).json({ message: 'Error 404', error: e.message });
   }
 };
 
