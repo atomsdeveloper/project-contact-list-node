@@ -1,5 +1,5 @@
 const express = require('express');
-const route = express.Router();
+const router = express.Router();
 
 // Controllers
 const homeController = require('./controllers/homeController');
@@ -8,19 +8,20 @@ const contatoController = require('./controllers/contatoController');
 
 // Middlewares
 const { loginRequired } = require('./middlewares/middleware');
+const { csrfMiddleware } = require('./middlewares/middleware');
 
 // Rotas da home
-route.get('/', homeController.start);
+router.get('/', csrfMiddleware, homeController.start);
 
 // Rotas de login
-route.post('/registro', loginController.register);
-route.post('/login', loginController.login);
-route.get('/logout', loginController.logout);
+router.post('/registro', loginController.register);
+router.post('/login', loginController.login);
+router.get('/logout', loginController.logout);
 
 // // Rotas de contato
-route.post('/contato/register', loginRequired, contatoController.register);
-route.get('/contato/index/:id', loginRequired, contatoController.editIndex);
-route.post('/contato/edit/:id', loginRequired, contatoController.edit);
-route.delete('/contato/delete/:id', loginRequired, contatoController.delete);
+router.post('/contato/register', loginRequired, contatoController.register);
+router.get('/contato/index/:id', loginRequired, contatoController.editIndex);
+router.post('/contato/edit/:id', loginRequired, contatoController.edit);
+router.delete('/contato/delete/:id', loginRequired, contatoController.delete);
 
-module.exports = route;
+module.exports = router;
