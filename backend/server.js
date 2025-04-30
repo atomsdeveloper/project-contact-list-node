@@ -32,9 +32,10 @@ const {
   corsMiddleware,
 } = require('./middlewares/middleware');
 
+app.use(corsMiddleware);
+
 app.use(helmet());
 
-app.use(corsMiddleware);
 app.options('*', corsMiddleware);
 
 app.use(cookieParser());
@@ -54,6 +55,8 @@ const sessionOptions = session({
   cookie: {
     maxAge: 1000 * 60 * 20,
     httpOnly: true,
+    sameSite: 'none', // Permite requisição cross-site
+    secure: true, // Obrigatório em produção com HTTPS
   },
 });
 
