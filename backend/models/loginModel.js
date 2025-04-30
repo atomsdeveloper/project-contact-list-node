@@ -34,7 +34,7 @@ class Login {
       return;
     }
 
-    this.success.push("Você entrou no sistema.")
+    this.success.push('Você entrou no sistema.');
   }
 
   async register() {
@@ -47,12 +47,12 @@ class Login {
     this.body.password = bcryptjs.hashSync(this.body.password, salt);
 
     this.user = await LoginModel.create(this.body);
-    this.success.push("Usuário craido com sucesso");
+    this.success.push('Usuário craido com sucesso');
   }
 
   async userExists() {
     this.user = await LoginModel.findOne({ email: this.body.email });
-    console.log("Exist user: ", this.user);
+
     if (this.user) {
       this.errors.push('Usuário já existe.');
       return true;
