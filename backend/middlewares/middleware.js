@@ -6,18 +6,13 @@ exports.middlewareGlobal = (req, res, next) => {
   next();
 };
 
-exports.checkCsrfError = (err, req, res, next) => {
-  if (err) {
-    return res.status(404).json({ message: err });
-  }
-  next();
-};
-
 exports.csrfMiddleware = (req, res, next) => {
-  if (res.headersSent) {
-    return;
-  }
   res.locals.csrfToken = req.csrfToken(); // Disponibiliza o CSRF token para as rotas
+  if (!res.locals.csrfToken) {
+    res
+      .status(401)
+      .json({ error: true, message: 'Você precisa obter o token.' });
+  }
   next();
 };
 
@@ -32,11 +27,6 @@ exports.corsMiddleware = (req, res, next) => {
   // Verificar se o domínio de origem está na lista de permitidos
   if (origin && allowOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
-  } else {
-    res.setHeader(
-      'Access-Control-Allow-Origin',
-      'https://project-contact-list-react.vercel.app',
-    );
   }
 
   res.setHeader(
