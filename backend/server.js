@@ -1,9 +1,17 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-
+// Recomendação de segurança para cabeçalhos do express.
+const helmet = require('helmet');
+// Cookies and Header csrfToken
+const csrf = require('csurf');
+const cookieParser = require('cookie-parser');
 // Sessions para cookies.
 const session = require('express-session');
+// Mensagems rápidas que são salvas na sessions para emitir mensagems para o cliente de erro ou sucesso.
+const flash = require('connect-flash');
+// Routes
+const routes = require('./routes');
 
 // Sessions serão salvas na base de dados.
 const MongoStore = require('connect-mongo');
@@ -19,28 +27,17 @@ mongoose
   })
   .catch((e) => console.log(e));
 
-// Mensagems rápidas que são salvas na sessions para emitir mensagems para o cliente de erro ou sucesso.
-const flash = require('connect-flash');
-
-const routes = require('./routes');
-
-// Recomendação de segurança para cabeçalhos do express.
-const helmet = require('helmet');
-const csrf = require('csurf');
-
 const {
   middlewareGlobal,
-  checkCsrfError,
-  csrfMiddleware,
   corsMiddleware,
 } = require('./middlewares/middleware');
 
-app.use(corsMiddleware);
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
 app.use(helmet());
+
+app.use(corsMiddleware);
+app.options('*', corsMiddleware);
+
+app.use(cookieParser());
 
 // Usando sessions para salvar os dados no navegador.
 const sessionOptions = session({
@@ -59,18 +56,23 @@ const sessionOptions = session({
     httpOnly: true,
   },
 });
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 app.use(sessionOptions);
+app.use(
+  csrf({
+    value: (req) => req.headers['x-csrf-token'], // lê do header
+    cookie: true,
+  }),
+);
 
 // Menssagems para serem enviadas e logo após deixarem de existir.
 app.use(flash());
 
-// Segurança de formulário
-app.use(csrf());
-
 // Middleware Globais para segurança.
 app.use(middlewareGlobal);
-app.use(checkCsrfError);
-app.use(csrfMiddleware);
 app.use(routes);
 
 // Só inicia o servidor quando a promise da conexão com o banco emitir o sinal 'pronto'.
