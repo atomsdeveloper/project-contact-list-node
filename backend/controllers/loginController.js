@@ -1,37 +1,37 @@
 const MongoStore = require('connect-mongo');
 const Login = require('../models/loginModel');
 
-// exports.register = async function (req, res) {
-//   try {
-//     const login = new Login(req.body);
-//     await login.register();
-
-//     const csrfTokenFromRequest = req.headers['x-csrf-token'];
-//     if (!csrfTokenFromRequest) {
-//       return res.status(403).json({
-//         success: false,
-//         errors: login.errors,
-//         message: 'Token não foi autenticado.',
-//       }); //Caso não existir csrfToken
-//     }
-
-//     // caso exista erros e enviada uma mensagem com o erro especifico.
-//     if (login.errors.length > 0) {
-//       return res.status(400).json({ success: false, errors: login.errors });
-//     }
-
-//     // caso não exista erros retona uma mensagem de sucesso.
-//     return res.status(201).json({ errors: false, success: login.success });
-//   } catch (e) {
-//     console.log(e);
-//     res.status(500).json({ message: 'Error 404', error: e.message });
-//   }
-// };
-
-// Controller Test
 exports.register = async function (req, res) {
-  res.status(200).json({ message: 'Cheguei no controller' });
+  try {
+    const login = new Login(req.body);
+    await login.register();
+
+    const csrfTokenFromRequest = req.headers['x-csrf-token'];
+    if (!csrfTokenFromRequest) {
+      return res.status(403).json({
+        success: false,
+        errors: login.errors,
+        message: 'Token não foi autenticado.',
+      }); //Caso não existir csrfToken
+    }
+
+    // caso exista erros e enviada uma mensagem com o erro especifico.
+    if (login.errors.length > 0) {
+      return res.status(400).json({ success: false, errors: login.errors });
+    }
+
+    // caso não exista erros retona uma mensagem de sucesso.
+    return res.status(201).json({ errors: false, success: login.success });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: 'Error 404', error: e.message });
+  }
 };
+
+// // Controller Test
+// exports.register = async function (req, res) {
+//   res.status(200).json({ message: 'Cheguei no controller' });
+// };
 
 exports.login = async function (req, res) {
   try {
