@@ -34,7 +34,7 @@ const {
 
 app.use(corsMiddleware);
 
-app.use(helmet());
+// app.use(helmet());
 
 app.options('*', corsMiddleware);
 
