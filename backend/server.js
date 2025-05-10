@@ -64,12 +64,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(sessionOptions);
-app.use(
-  csrf({
-    value: (req) => req.headers['x-csrf-token'], // lê do header
-    cookie: true,
-  }),
-);
 
 // Menssagems para serem enviadas e logo após deixarem de existir.
 app.use(flash());
