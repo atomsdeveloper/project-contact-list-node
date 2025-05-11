@@ -33,6 +33,9 @@ Contato.prototype.validate = function () {
     this.errors.push('E-mail inváido.');
   // Valida nome pois é obrigatório.
   if (!this.body.name) this.errors.push('Campo nome é obrigatório.');
+  // Valida nome pois é obrigatório.
+  if (!this.body.secondname)
+    this.errors.push('Campo segundo nome é obrigatório.');
   // Pelo menos um dos contatos precisam ser enviados.
   if (!this.body.tel && !this.body.email) {
     this.errors.push('Pelo menos um dos contatos precisam ser enviados.');

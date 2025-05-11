@@ -47,7 +47,7 @@ exports.corsMiddleware = (req, res, next) => {
 };
 
 exports.loginRequired = (req, res, next) => {
-  const csrfToken = req.headers.get('x-csrf-token');
+  const csrfToken = req.headers;
   if (!req.session.cookie && !csrfToken) {
     req.session.save(() => {
       res

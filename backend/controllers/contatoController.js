@@ -3,16 +3,15 @@ const Contato = require('../models/contatoModel');
 exports.register = async function (req, res) {
   try {
     const contato = new Contato(req.body);
+    console.log(req.body);
     await contato.register();
 
     if (contato.errors.length > 0) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          errors: contato.errors,
-          message: 'Não foi possivel registrar o contatro',
-        });
+      return res.status(400).json({
+        success: false,
+        errors: contato.errors,
+        message: 'Não foi possivel registrar o contatro',
+      });
     }
 
     res.status(201).json({
