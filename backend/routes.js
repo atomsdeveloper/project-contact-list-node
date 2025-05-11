@@ -8,10 +8,9 @@ const contatoController = require('./controllers/contatoController');
 
 // Middlewares
 const { loginRequired } = require('./middlewares/middleware');
-const { csrfMiddleware } = require('./middlewares/middleware');
 
 // Rotas da home
-router.get('/', csrfMiddleware, homeController.start);
+router.get('/', homeController.start);
 
 // Rotas de login
 router.post('/register', loginController.register);
