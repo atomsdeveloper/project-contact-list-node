@@ -49,7 +49,9 @@ exports.corsMiddleware = (req, res, next) => {
 exports.loginRequired = (req, res, next) => {
   if (!req.session.user) {
     req.session.save(() => {
-      res.json({ success: false, message: 'Você precisa fazer login.' });
+      res
+        .status(401)
+        .json({ success: false, message: 'Você precisa fazer login.' });
     });
     return;
   }
