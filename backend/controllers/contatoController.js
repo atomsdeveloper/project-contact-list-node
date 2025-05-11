@@ -3,7 +3,6 @@ const Contato = require('../models/contatoModel');
 exports.register = async function (req, res) {
   try {
     const contato = new Contato(req.body);
-    console.log(req.body);
     await contato.register();
 
     if (contato.errors.length > 0) {

@@ -53,7 +53,7 @@ Contato.prototype.cleanUp = function () {
   // Sobreescrevendo o objeto pegando somente os dados necessários para validação.
   this.body = {
     name: this.body.name,
-    secondname: this.body.password,
+    secondname: this.body.secondname,
     email: this.body.email,
     tel: this.body.tel,
   };
