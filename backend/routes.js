@@ -20,7 +20,7 @@ router.get('/logout', loginController.logout);
 
 // // Rotas de contato
 router.post('/contact/register', loginRequired, contatoController.register);
-router.get('/contato/index/:id', loginRequired, contatoController.editIndex);
+router.get('/contact/index/:id', loginRequired, contatoController.editIndex);
 router.post('/contact/edit/:id', loginRequired, contatoController.edit);
 router.delete('/contact/delete/:id', loginRequired, contatoController.delete);
 
