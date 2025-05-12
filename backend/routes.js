@@ -20,8 +20,8 @@ router.get('/logout', loginController.logout);
 
 // // Rotas de contato
 router.post('/contact/register', loginRequired, contatoController.register);
-router.get('/contact/index/:id', loginRequired, contatoController.editIndex);
-router.post('/contact/edit/:id', loginRequired, contatoController.edit);
+router.get('/contact/index/:id', loginRequired, contatoController.editIndex); // Busca o contato que será editado.
+router.post('/contact/edit/:id', loginRequired, contatoController.edit); // Envia os dados do contato editado.
 router.delete('/contact/delete/:id', loginRequired, contatoController.delete);
 
 module.exports = router;

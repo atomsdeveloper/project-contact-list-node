@@ -65,6 +65,9 @@ app.use(express.json());
 
 app.use(sessionOptions);
 
+// Inicializa o middleware CSRF (baseado em cookies)
+app.use(csrf({ cookie: true }));
+
 // Menssagems para serem enviadas e logo após deixarem de existir.
 app.use(flash());
 

@@ -7,13 +7,21 @@ exports.middlewareGlobal = (req, res, next) => {
 };
 
 exports.csrfMiddleware = (req, res, next) => {
-  res.locals.csrfToken = req.csrfToken(); // Disponibiliza o CSRF token para as rotas
-  if (!res.locals.csrfToken) {
+  try {
+    const token = req.csrfToken(); // Disponibiliza o CSRF token para as rotas
+    res.locals.csrfToken = token;
+    next();
+
+    if (!res.locals.csrfToken) {
+      return res
+        .status(401)
+        .json({ error: true, message: 'Você precisa obter o token.' });
+    }
+  } catch (error) {
     res
-      .status(401)
-      .json({ error: true, message: 'Você precisa obter o token.' });
+      .status(500)
+      .json({ error: true, message: 'Não foi possivel buscar o token.' });
   }
-  next();
 };
 
 exports.corsMiddleware = (req, res, next) => {
