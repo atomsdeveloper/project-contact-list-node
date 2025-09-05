@@ -1,19 +1,12 @@
-const MongoStore = require('connect-mongo');
+require('dotenv').config();
+
 const Login = require('../models/loginModel');
+const jwt = require('jsonwebtoken');
 
 exports.register = async function (req, res) {
   try {
     const login = new Login(req.body);
     await login.register();
-
-    const csrfTokenFromRequest = req.headers['x-csrf-token'];
-    if (!csrfTokenFromRequest) {
-      return res.status(403).json({
-        success: false,
-        errors: login.errors,
-        message: 'Token não foi autenticado.',
-      }); //Caso não existir csrfToken
-    }
 
     // caso exista erros e enviada uma mensagem com o erro especifico.
     if (login.errors.length > 0) {
@@ -28,11 +21,6 @@ exports.register = async function (req, res) {
   }
 };
 
-// // Controller Test
-// exports.register = async function (req, res) {
-//   res.status(200).json({ message: 'Cheguei no controller' });
-// };
-
 exports.login = async function (req, res) {
   try {
     const login = new Login(req.body);
@@ -43,17 +31,27 @@ exports.login = async function (req, res) {
       return res.status(400).json({ errors: login.errors, message: '' });
     }
 
-    // Após o Login com sucesso, armazenar o usuário na sessão
-    const auth = (req.session.user = {
-      id: login.user._id,
-      email: login.user.email,
-      token: login.user.token, // Adicione o token aqui
+    // Generate token
+    const token = jwt.sign(
+      { id: login.user.id, email: login.user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' },
+    );
+
+    // Create cookie plus token generated.
+    res.cookie('LOGIN_SESSION', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 1000, // 1h
     });
+
     return res.status(200).json({
       errors: false,
       success: login.success,
       user: login.user,
-      auth: auth,
+      auth: token,
+      csrfToken: req.csrfToken(),
     });
   } catch (e) {
     console.log(e);
@@ -62,21 +60,6 @@ exports.login = async function (req, res) {
 };
 
 exports.logout = function (req, res) {
-  req.session.destroy(async (err) => {
-    if (err) {
-      console.error('Erro ao destruir sessão:', err);
-      return res.status(500).json({ message: 'Erro ao fazer logout' });
-    }
-
-    // Removendo sessão diretamente do MongoStore
-    const store = MongoStore.create({ mongoUrl: process.env.CONNECTIONSTRING });
-    await store.destroy(req.sessionID); // Remover esta linha
-
-    // Remover o cookie do navegador
-    res.clearCookie('connect.sid', { path: '/', httpOnly: true });
-    return res.status(200).json({
-      message:
-        'Você deslogou do sistema, para ter acesso as ações faça login novamente.',
-    });
-  });
+  res.clearCookie('LOGIN_SESSION');
+  return res.status(200).json({ message: 'Logout realizado com sucesso' });
 };

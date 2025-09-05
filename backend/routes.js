@@ -14,9 +14,9 @@ const { csrfMiddleware } = require('./middlewares/middleware');
 router.get('/', csrfMiddleware, homeController.start);
 
 // Rotas de login
-router.post('/register', loginController.register);
 router.post('/login', loginController.login);
 router.get('/logout', loginController.logout);
+router.post('/register', loginRequired, loginController.register);
 
 // // Rotas de contato
 router.post('/contact/register', loginRequired, contatoController.register);

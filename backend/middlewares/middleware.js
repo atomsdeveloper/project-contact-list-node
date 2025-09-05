@@ -1,22 +1,11 @@
-// Adicionando middleware para todas as rotas com as mensagens de erros ou seccess com Flash Messages
-exports.middlewareGlobal = (req, res, next) => {
-  res.locals.errors = req.flash('erros');
-  res.locals.success = req.flash('success');
-  res.locals.user = req.session.user;
-  next();
-};
+const jwt = require('jsonwebtoken');
 
+// Adicionando middleware para todas as rotas com as mensagens de erros ou seccess com Flash Messages
 exports.csrfMiddleware = (req, res, next) => {
   try {
     const token = req.csrfToken(); // Disponibiliza o CSRF token para as rotas
     res.locals.csrfToken = token;
     next();
-
-    if (!res.locals.csrfToken) {
-      return res
-        .status(401)
-        .json({ error: true, message: 'Você precisa obter o token.' });
-    }
   } catch (error) {
     res
       .status(500)
@@ -55,14 +44,16 @@ exports.corsMiddleware = (req, res, next) => {
 };
 
 exports.loginRequired = (req, res, next) => {
-  const csrfToken = req.headers;
-  if (!req.session.cookie && !csrfToken) {
-    req.session.save(() => {
-      res
-        .status(401)
-        .json({ success: false, message: 'Você precisa fazer login.' });
-    });
-    return;
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ message: 'Token não fornecido.' });
+
+  try {
+    const userTokenCheck = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = userTokenCheck;
+    next();
+  } catch (err) {
+    return res.status(403).json({ message: 'Token inválido.' });
   }
-  next();
 };
