@@ -3,7 +3,7 @@ const validator = require('validator');
 
 const ContatoSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  secondname: { type: String, required: false, default: '' },
+  secondname: { type: String, required: true, default: '' },
   email: { type: String, required: false, default: '' },
   tel: { type: String, required: false, default: '' },
   created: { type: Date, default: Date.now },
@@ -33,6 +33,9 @@ Contato.prototype.validate = function () {
     this.errors.push('E-mail inváido.');
   // Valida nome pois é obrigatório.
   if (!this.body.name) this.errors.push('Campo nome é obrigatório.');
+  // Valida nome pois é obrigatório.
+  if (!this.body.secondname)
+    this.errors.push('Campo segundo nome é obrigatório.');
   // Pelo menos um dos contatos precisam ser enviados.
   if (!this.body.tel && !this.body.email) {
     this.errors.push('Pelo menos um dos contatos precisam ser enviados.');
@@ -50,7 +53,7 @@ Contato.prototype.cleanUp = function () {
   // Sobreescrevendo o objeto pegando somente os dados necessários para validação.
   this.body = {
     name: this.body.name,
-    secondname: this.body.password,
+    secondname: this.body.secondname,
     email: this.body.email,
     tel: this.body.tel,
   };
