@@ -1,15 +1,7 @@
-const mongoose = require('mongoose');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
 const validator = require('validator');
-
-const ContatoSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  secondname: { type: String, required: true, default: '' },
-  email: { type: String, required: false, default: '' },
-  tel: { type: String, required: false, default: '' },
-  created: { type: Date, default: Date.now },
-});
-
-const ContatoModel = mongoose.model('Contato', ContatoSchema);
 
 // Função Construtura
 function Contato(body) {
@@ -22,14 +14,21 @@ function Contato(body) {
 Contato.prototype.register = async function () {
   this.validate();
   if (this.errors.length > 0) return;
-  this.contato = await ContatoModel.create(this.body);
+  this.contato = await prisma.contact.create({
+    data: this.body,
+  });
 };
 
 Contato.prototype.validate = function () {
   this.cleanUp();
 
   // Validar e-mail somente se ele for enviado.
-  if (this.body.email && !validator.isEmail(this.body.email))
+  if (
+    this.body.email &&
+    !validator.isEmail(this.body.email, {
+      allow_utf8_local_part: true,
+    })
+  )
     this.errors.push('E-mail inváido.');
   // Valida nome pois é obrigatório.
   if (!this.body.name) this.errors.push('Campo nome é obrigatório.');
@@ -63,29 +62,47 @@ Contato.prototype.edit = async function (id) {
   if (typeof id !== 'string') {
     this.errors.push('Não foi recebido um id.');
   }
+
   this.validate();
+
   if (this.errors.length > 0) return;
-  this.success = 'Contato editado com sucesso.';
-  this.contato = await ContatoModel.findByIdAndUpdate(id, this.body, {
-    new: true,
-  });
+
+  try {
+    this.contato = await prisma.contact.update({
+      where: { id: Number(id) },
+      data: {
+        name: this.body.name,
+        secondname: this.body.secondname,
+        email: this.body.email,
+        tel: this.body.tel,
+      },
+    });
+
+    this.success = 'Contato editado com sucesso.';
+  } catch (e) {
+    this.errors.push('Erro ao editar contato: ' + e.message);
+  }
 };
 
 // Método estático.
 Contato.buscarId = async function (id) {
   if (typeof id !== 'string') return;
-  const contato = await ContatoModel.findById({ _id: id });
+  const contato = await prisma.contact.findFirst({
+    where: { id: Number(id) },
+  });
   return contato;
 };
 
-Contato.buscarContatos = async function (id) {
-  const contato = await ContatoModel.find().sort({ created: 1 });
+Contato.buscarContatos = async function () {
+  const contato = await prisma.contact.findMany({});
   return contato;
 };
 
 Contato.delete = async function (id) {
   if (typeof id !== 'string') return;
-  const contato = await ContatoModel.findOneAndDelete({ _id: id });
+  const contato = await prisma.contact.delete({
+    where: { id: Number(id) },
+  });
 
   return contato;
 };
